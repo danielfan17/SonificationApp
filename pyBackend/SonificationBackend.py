@@ -6,8 +6,8 @@ from DataReadPlot import load_touch_history, plot_points
 class ServerState:
     def __init__(self):
         self.current_ws = None
-        # 在程序启动时就初始化图形数据
-        self.stored_graph = self.initialize_graph_data()
+        # 取消程序启动时生成图形数据
+        self.stored_graph = None
         self.stored_messages = []
 
     def initialize_graph_data(self):
@@ -39,7 +39,8 @@ async def interactive_input():
             continue
 
         if command == "1":
-            # 直接发送初始化好的图形数据
+            # 每次收到命令 "1" 时重新生成随机图形数据并发送
+            state.stored_graph = state.initialize_graph_data()
             await state.current_ws.send(format_to_json(state.stored_graph))
             print("Sent prepared data:")
         elif command == "2":
